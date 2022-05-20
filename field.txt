@@ -1,0 +1,68 @@
+Konstruktor:
+	Param 1: breite des Feldes
+	Param 2: höhe des Feldes
+	Param 3: wie wie viele der Spieler in einer Reihe braucht
+
+	Bsp.:
+	Field f = new Field(4, 3, 2);
+
+	Feld:
+	[ , , , ]
+	[ , , , ]
+	[ , , , ]
+
+	Spieler Gewinnt mit:
+	[ , , , ]
+	[x,x, , ]
+	[ , , , ]
+
+	oder
+	[ , , , ]
+	[x, , , ]
+	[x, , , ]
+
+	(Diagonalen auch etc.)
+
+Figur plazieren:
+	Name: "Push"
+	Param 1: Reihe
+	Param 2: Char, spieler
+	
+	Rückgabetyp: bool; true wenn der Zug erfolgt ist, false bei wenn der Stack zu voll ist
+
+	Bsp. beim vorherigen leeren Feld:
+	f.Push(1, 'c')
+	 0 1 2 3
+	[ , , , ]
+	[ , , , ]
+	[ ,c, , ]
+	//zweiter push
+	
+	f.Push(1, 'c')
+	 0 1 2 3
+	[ , , , ]
+	[ ,c, , ]
+	[ ,c, , ]
+	Jede Reihe verhält sich wie ein Stack. (https://de.wikipedia.org/wiki/Stapelspeicher)
+	Es gibt kein pop.
+
+Gewinner evaluieren:
+	Name: "CheckWinner"
+	keine Parameter
+	
+	Rückgabetyp: char des Gewinners, Leerzeichen wenn keiner gewonnen hat
+	Bsp.:
+	f.CheckWinner();
+
+String konvertierungen:
+	Name: "ToString2D"
+	keine parameter
+
+	Rückgabetyp: string, gibt alle Zeilen mit einem Zeilenumbruch zurück.
+	Bsp.:
+	f.ToString2D();
+
+	Name: "ToString1D"
+	keine Parameter	
+
+	Rückgabetyp: string, gibt alle Zeichen in einem String zurück. Keine Trennungen.
