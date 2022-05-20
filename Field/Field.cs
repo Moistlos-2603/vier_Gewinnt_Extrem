@@ -155,7 +155,7 @@ namespace Field
         /// Failure can be result of a filled row.
         /// </summary>
         /// <param name="player"></param>
-        /// <returns></returns>
+        /// <returns>bool</returns>
         public bool Push(int row, char player)
         {
             // test if row index is in bounds. Tests all
@@ -193,13 +193,18 @@ namespace Field
             //Checks with regex, if an winning condition is fullfilled. Returns if true the 'value of the winner'.
             char winner = ' ';
 
+            //TODO: remove while(condition) if(same condition && actually usefull additional condition){DoingStuff();}
             Match match = this.horizontal.Match(this.self);
-
-            if (match.Success && (match.Index % width) == 0)
+            while(match.Success)
             {
-                return match.Value[0];
+                if (match.Success && (match.Index % width) == 0)
+                {
+                    return match.Value[0];
+                }
+                match.NextMatch();
             }
 
+            //No edgecases.
             match = this.vertical.Match(this.self);
             if (match.Success)
             {
@@ -254,10 +259,16 @@ namespace Field
              * 
              * h < width so it' valid! Edge cases don't need additional ifs!
              */
+            //Edgecases can be detected as match.
+            //So there can exist several edgecases and one valid match. Has to go through several matches to find the valide one.
             match = this.diagonal_left_to_bottom.Match(this.self);
-            if (match.Success && (match.Index % width) + win_len - 1 < width)
+            while (match.Success)
             {
-                return match.Value[0];
+                if (match.Success && (match.Index % width) + win_len - 1 < width)
+                {
+                    return match.Value[0];
+                }
+                match = match.NextMatch();
             }
 
             /*
@@ -283,10 +294,16 @@ namespace Field
              * 
              * If index is the maximal index, it's a valid match. (For more information look at diagonal left to bottom match) 
              */
+            //Edgecases can be detected as match.
+            //So there can exist several edgecases and one valid match. Has to go through several matches to find the valide one.
             match = this.diagonal_left_to_top.Match(this.self);
-            if (match.Success && (match.Index + match.Length - 1) % width + win_len - 1 < width)
+            while (match.Success)
             {
-                return match.Value[0];
+                if (match.Success && (match.Index + match.Length - 1) % width + win_len - 1 < width)
+                {
+                    return match.Value[0];
+                }
+                match = match.NextMatch();
             }
             return winner;
         }
@@ -295,7 +312,7 @@ namespace Field
         /// Returns the field as string with new lines.
         /// </summary>
         /// <returns>string</returns>
-        public override string ToString()
+        public string ToString2D()
         {
             string temp = string.Empty;
             for (int i = 0; i < height; i++)
@@ -304,6 +321,8 @@ namespace Field
             }
             return temp;
         }
+
+        public string ToString1D() => self;
 
 #if DEBUG
         public string DEBUG_CHANGE
