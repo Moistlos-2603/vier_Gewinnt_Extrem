@@ -1,0 +1,19 @@
+﻿<Window x:Class="VierGewinntExtrem.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VierGewinntExtrem"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Button x:Name="StartButton" Content="Start" HorizontalAlignment="Center" Height="50" VerticalAlignment="Center" Width="188" Click="StartButton_Click"/>
+        <ComboBox x:Name="GameTypeSelector" HorizontalAlignment="Center" Height="37" Margin="0,201,0,0" VerticalAlignment="Top" Width="188" SelectionChanged="GameTypeSelector_SelectionChanged"/>
+        <TextBox x:Name="P1NameGetter" HorizontalAlignment="Left" Height="24" Margin="60,60,0,0" TextWrapping="Wrap" Text="Player1" VerticalAlignment="Top" Width="224"/>
+        <TextBox x:Name="P2NameGetter" Height="24" Margin="0,60,60,0" TextWrapping="Wrap" Text="Player2" VerticalAlignment="Top" HorizontalAlignment="Right" Width="224"/>
+        <Button x:Name="NameSubmitButton" Content="Submit" HorizontalAlignment="Left" Height="45" Margin="332,299,0,0" VerticalAlignment="Top" Width="145" Click="Button_Click"/>
+        <Label x:Name="NameErrorMSG" Content="" HorizontalAlignment="Left" Height="53" Margin="251,349,0,0" VerticalAlignment="Top" Width="337" Background="#FFFDFDFD" Foreground="Red"/>
+        <Grid x:Name="GameGrid" HorizontalAlignment="Center" Margin="0,60,0,0" Width="404" Height="331" VerticalAlignment="Top"/>
+        <Grid x:Name="ButtonGrid" HorizontalAlignment="Center" Height="48" Margin="0,7,0,0" VerticalAlignment="Top" Width="404"/>
+    </Grid>
+</Window>
