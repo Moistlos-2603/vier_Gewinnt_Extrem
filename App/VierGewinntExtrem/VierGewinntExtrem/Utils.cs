@@ -29,5 +29,14 @@ namespace Utils
             return temp;
         }
 
+        public static bool AllEqual(string str)
+        {
+            for(int i = 1; i < str.Length; i++)
+            {
+                if(str[i] != str[i-1])
+                    return false;
+            }
+            return true;
+        }
     }
 }

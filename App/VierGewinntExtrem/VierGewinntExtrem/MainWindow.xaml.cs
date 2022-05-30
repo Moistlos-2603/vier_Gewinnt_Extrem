@@ -45,11 +45,21 @@ namespace VierGewinntExtrem
             //make everything invisible for later
             GameTypeSelector.Items.Add(mode_normal);
             GameTypeSelector.Items.Add(mode_3x3);
+            Title = "VierGewinnt";
+            //wait for startbutton to be pressed
+
+            StartGame();
+        }
+
+        private void StartGame()
+        {
             GameTypeSelector.Visibility = Visibility.Collapsed;
             P1NameGetter.Visibility = Visibility.Collapsed;
             P2NameGetter.Visibility = Visibility.Collapsed;
             NameSubmitButton.Visibility = Visibility.Collapsed;
-            //wait for startbutton to be pressed
+            PlayerTurnDisplay.Visibility = Visibility.Collapsed;
+            GameEndMSG.Visibility = Visibility.Collapsed;
+            ReplayButton.Visibility = Visibility.Collapsed;
         }
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
@@ -148,6 +158,8 @@ namespace VierGewinntExtrem
                 controls[i].Click += GenericControlButton_Clicked;
                 ButtonGrid.Children.Add(controls[i]);
             }
+            PlayerTurnDisplay.Content = P1NameGetter.Text;
+            PlayerTurnDisplay.Visibility = Visibility.Visible;
         }
 
         private void GenericControlButton_Clicked(object sender, RoutedEventArgs e)
@@ -164,35 +176,72 @@ namespace VierGewinntExtrem
             }
             if(gamestate < 2)
             {
-                if(game.Push(row, gamestate == 0 ? '1' : '2'))
+                if(game.Push(row, gamestate == 0 ? player1 : player2))
                 {
                     gamestate ^= 1;
                 }
             }
-            Title = row.ToString();
             RePaint();
+            EvaluateWinner();
         }
 
         private void RePaint()
         {
-            for(int i = 0; i < visual_field.Length; i++)
+            for(int i = 0; i < game.Dimensions.Item1; i++)
             {
-                SolidColorBrush b;
-                switch(game.ToString1D()[i])
+                for(int j = 0; j < game.Dimensions.Item2 ; j++)
                 {
-                    case player1:
-                        b = Brushes.Red;
-                        break;
-                    case player2:
-                        b = Brushes.Yellow;
-                        break;
-                    default:
-                        b = Brushes.LightGray;
-                        break;
+                    SolidColorBrush b;
+                    switch(game.GetCharArray()[i, j])
+                    {
+                        case player1:
+                            b = Brushes.Red;
+                            break;
+                        case player2:
+                            b = Brushes.Yellow;
+                            break;
+                        default:
+                            b = Brushes.LightGray;
+                            break;
+                    }
+                    visual_field[i + (game.Dimensions.Item2 - j - 1) * game.Dimensions.Item1].Fill = b;
                 }
-                
-                visual_field[visual_field.Length - i].Fill = b;
             }
+            
+            PlayerTurnDisplay.Content = gamestate == 0 ? P1NameGetter.Text : P2NameGetter.Text;
+            PlayerTurnDisplay.Foreground = gamestate == 0 ? Brushes.Red : Brushes.Yellow;
+        }
+
+        private void EvaluateWinner()
+        {
+            char winner = game.CheckWinner();
+            if(winner == ' ')
+            {
+                foreach(char c in game.GetCharArray())
+                {
+                    if(c == ' ')
+                        return;
+                }
+
+                Tie();
+            }
+
+            GameWon(gamestate == 0 ? P2NameGetter.Text : P1NameGetter.Text);
+            GameGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private void GameWon(string name)
+        {
+            GameEndMSG.Content = $"Congratulations,\n'{name}' won.";
+            GameEndMSG.Visibility = Visibility.Visible;
+            ReplayButton.Visibility = Visibility.Visible;
+            //do database entry for the win
+        }
+
+        private void Tie()
+        {
+            GameEndMSG.Content = $"No one won.";
+            ReplayButton.Visibility = Visibility.Visible;
         }
     }
 }
