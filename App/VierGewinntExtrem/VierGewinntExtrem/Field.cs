@@ -7,203 +7,140 @@ namespace Field
 
     public class Field
     {
-        /*
-         * 2D:
-         * [ , , , , , , ]
-         * [ , , , , , , ]
-         * [ , , , , , , ]
-         * [ , , , , , , ]
-         * 
-         * height: 4 width: 7
-         * 
-         * 1D
-         * [ , , , , , , , , , , , , , , , , , , , , , , , , , , , ]
-         * length 28 = 4 * 7 = height * width
+        private int width, height, win_len;
+        /*  width ->        h
+         * [0, 1, 2, ...]   e
+         * [            ]   i
+         * [            ]   g
+         * [            ]   h
+         *                  t
+         *                  
+         *                  |
+         *                  v
          */
-        private char[,] self;
-        private int height, width, win_len;
+        private string self;
 
-        public Field(int width, int height, int win_len)
+        private Regex[] horizontal = new Regex[2],
+                       vertical = new Regex[2],
+                       diagonal_to_top = new Regex[2],
+                       diagonal_to_bottom = new Regex[2];
+
+        //for programming outside the class
+        public const char Player1 = '1';
+        public const char Player2 = '2';
+
+        //for dynamic programming
+        private char[] player = new char[] { Player1, Player2 };
+
+        public Field(int width, int height, int winning_length)
         {
-            //Field init
-            this.self = new char[width, height];
-
-            this.height = height;
             this.width = width;
-            this.win_len = win_len;
+            this.height = height;
+            this.win_len = winning_length;
 
-            for (int i = 0; i < height; i++)
-                for (int j = 0; j < width; j++)
-                    self[j, i] = ' ';
+            this.self = new(' ', width * height);
 
+            //very explicit
+            horizontal[(int)Player.player1] = new Regex(new string(player[(int)Player.player1], winning_length), RegexOptions.Compiled);
+            horizontal[(int)Player.player2] = new Regex(new string(player[(int)Player.player2], winning_length), RegexOptions.Compiled);
+
+            vertical[(int)Player.player1] = new Regex(Util.MulStrInt(player[(int)Player.player1] + new string('.', width - 1), win_len).Trim('.'), RegexOptions.Compiled);
+            vertical[(int)Player.player2] = new Regex(Util.MulStrInt(player[(int)Player.player2] + new string('.', width - 1), win_len).Trim('.'), RegexOptions.Compiled);
+
+            diagonal_to_bottom[(int)Player.player1] = new Regex(Util.MulStrInt(player[(int)Player.player1] + new string('.', width), win_len).Trim('.'), RegexOptions.Compiled);
+            diagonal_to_bottom[(int)Player.player2] = new Regex(Util.MulStrInt(player[(int)Player.player2] + new string('.', width), win_len).Trim('.'), RegexOptions.Compiled);
+
+            diagonal_to_top[(int)Player.player1] = new Regex(Util.MulStrInt(player[(int)Player.player1] + new string('.', width - 2), win_len).Trim('.'), RegexOptions.Compiled);
+            diagonal_to_top[(int)Player.player2] = new Regex(Util.MulStrInt(player[(int)Player.player2] + new string('.', width - 2), win_len).Trim('.'), RegexOptions.Compiled);
         }
 
-        /// <summary>
-        /// Player character gets pushed on the stack like row. Returns false, if failed.
-        /// Failure can be result of a filled row.
-        /// </summary>
-        /// <param name="player"></param>
-        /// <returns>bool</returns>
-        public bool Push(int row, char player)
+        public bool Push(int row, Player player)
         {
-            // test if row index is in bounds. Tests all
-            // indecies from of the row from the start to end
-            // if it's empty, if true it's set to a player value.
-            for (int i = 0; i < this.height; i++)
+            for (int i = height - 1; i >= 0; i--)
             {
-                if (self[row, i] == ' ')
+                int index = i * width + row;
+                if (self[index] == ' ')
                 {
-                    self[row, i] = player;
+                    //self to char array
+                    char[] tmp_arr = self.ToArray<char>();
+                    //set value
+                    tmp_arr[index] = this.player[(int)player];
+                    //char array to self 
+                    self = new(tmp_arr);
                     return true;
                 }
             }
 
-            // if no index is filled, there is now space. An error occured!
+            //no placing happend
             return false;
         }
 
-        /// <summary>
-        /// Checks wether someone won. Returns the winner character, if there is no winner whitespace (' ') is returned.
-        /// </summary>
-        /// <returns>char</returns>
         public char CheckWinner()
         {
-            string[] sfield = this.ToString2D().Split("|\n")[0..^1];
+            char winner = ' ';
 
-            //horizontal
-            for (int j = 0; this.height > j; j++)
+            for (int i = 0; i < 2; i++)
             {
-                string tmp = string.Empty;
-
-                for (int i = 0; this.width > i; i++)
+                Match m = horizontal[i].Match(self);
+                if (m.Success && m.Index % width <= width - win_len)
                 {
-                    tmp += sfield[i][j];
+                    winner = m.Value[0];
+                    break;
                 }
 
-                char m = EqualMatch(tmp);
-                if (m != ' ')
-                    return m;
-            }
-
-            //vertical
-            for (int i = 0; i < this.width; i++)
-            {
-                char m = EqualMatch(sfield[i]);
-                if (m != ' ')
-                    return m;
-            }
-
-            //TODO: make it work
-            //diagonal left to bottom
-            for (int i = 0; i -1 < this.width - this.win_len; i++)
-            {
-                for (int j = 0; j - 1 < this.height - this.win_len; j++)
+                m = vertical[i].Match(self);
+                if (m.Success)
                 {
-                    string tmp = string.Empty;
+                    winner = m.Value[0];
+                    break;
+                }
 
-                    for (int k = 0; k < this.win_len; k++)
-                    {
-                        tmp += self[i + k, j + k];
-                    }
+                m = diagonal_to_bottom[i].Match(self);
+                if (m.Success && m.Index % width <= width - win_len)
+                {
+                    winner = m.Value[0];
+                    break;
+                }
 
-                    if (Util.AllEqual(tmp) && tmp[0] != ' ')
-                    {
-                        return tmp[0];
-                    }
+                m = diagonal_to_top[i].Match(self);
+                if (m.Success && (m.Index + win_len - 1) % width <= width - win_len)
+                {
+                    winner = m.Value[0];
+                    break;
                 }
             }
-
-            //diagonal left to top
-            Console.WriteLine("ltt");
-            for (int i = 0; i < this.width - this.win_len; i++)
-            {
-                for (int j = this.win_len - 1; j < this.height; j++)
-                {
-                    string tmp = string.Empty;
-                    for (int k = 0; k < this.win_len; k++)
-                    {
-                        tmp += self[i + k, j - k];
-                    }
-
-                    if (Util.AllEqual(tmp) && tmp[0] != ' ')
-                    {
-                        return tmp[0];
-                    }
-                }
-            }
-            return ' ';
+            return winner;
         }
 
-        /// <summary>
-        /// Returns the field as string with new lines.
-        /// </summary>
-        /// <returns>string</returns>
-        public string ToString2D()
+        public string[,] ToString2D()
         {
-            string tmp = string.Empty;
-            for (int i = 0; i < this.width; i++)
+            string[,] tmp = new string[1, height];
+
+            for (int i = 0; i < height; i++)
             {
-                for (int j = 0; j < this.height; j++)
-                    tmp += self[i, j];
-                tmp += "|\n";
+                tmp[0, i] = self.Substring(i * width, width);
             }
             return tmp;
         }
 
-        public string ToString1D()
-        {
-            string tmp = string.Empty;
-            for (int i = 0; i < this.width; i++)
-            {
-                for (int j = 0; j < this.height; j++)
-                {
-                    tmp += self[i, j];
-                }
-            }
-            return tmp;
-        }
+        public string ToString1D() => self;
 
         public (int, int) Dimensions { get => (width, height); }
 
-        public char[,] GetCharArray() => self;
-
-        private char EqualMatch(string test)
-        {
-
-            for (int i = 0; i < test.Length - this.win_len; i++)
-            {
-                if (Util.AllEqual(test.Substring(i, this.win_len)) && test[i] != ' ')
-                {
-                    return test[i];
-                }
-            }
-            if (Util.AllEqual(test) && test[0] != ' ')
-            {
-                return test[0];
-            }
-
-            return ' ';
-        }
-
 #if DEBUG
-        public string DEBUG_CHANGE
+        public string DebugSelf
         {
             set
             {
-                if (value.Length == this.self.Length)
+                if (value.Length == self.Length)
                 {
-                    for (int i = 0; i < this.width; i++)
-                    {
-                        for (int j = 0; j < this.height; j++)
-                        {
-                            this.self[i, j] = value[j * height + i];
-                        }
-                    }
-                    return;
+                    self = value;
                 }
-                throw new Exception("string length difference; width, hight, etc. are not applying anymore.");
+                else
+                {
+                    throw new Exception("Intput string was not right size!");
+                }
             }
-
         }
 #endif
     }

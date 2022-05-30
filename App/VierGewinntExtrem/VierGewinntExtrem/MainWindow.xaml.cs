@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Text.RegularExpressions;
+using Field;
 
 namespace VierGewinntExtrem
 {
@@ -53,6 +54,7 @@ namespace VierGewinntExtrem
 
         private void StartGame()
         {
+            //TODO: make it deactivate everything except startbutton
             GameTypeSelector.Visibility = Visibility.Collapsed;
             P1NameGetter.Visibility = Visibility.Collapsed;
             P2NameGetter.Visibility = Visibility.Collapsed;
@@ -60,6 +62,8 @@ namespace VierGewinntExtrem
             PlayerTurnDisplay.Visibility = Visibility.Collapsed;
             GameEndMSG.Visibility = Visibility.Collapsed;
             ReplayButton.Visibility = Visibility.Collapsed;
+            Player1Color.Visibility = Visibility.Collapsed;
+            Player2Color.Visibility = Visibility.Collapsed;
         }
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
@@ -119,6 +123,8 @@ namespace VierGewinntExtrem
             GameTypeSelector.Visibility = Visibility.Collapsed;
             P1NameGetter.Visibility = Visibility.Visible;
             P2NameGetter.Visibility = Visibility.Visible;
+            Player1Color.Visibility = Visibility.Visible;
+            Player2Color.Visibility = Visibility.Visible;
             NameSubmitButton.Visibility = Visibility.Visible;
         }
 
@@ -176,7 +182,7 @@ namespace VierGewinntExtrem
             }
             if(gamestate < 2)
             {
-                if(game.Push(row, gamestate == 0 ? player1 : player2))
+                if(game.Push(row, gamestate == 0 ? Player.player1 : Player.player2))
                 {
                     gamestate ^= 1;
                 }
@@ -187,25 +193,25 @@ namespace VierGewinntExtrem
 
         private void RePaint()
         {
-            for(int i = 0; i < game.Dimensions.Item1; i++)
-            {
-                for(int j = 0; j < game.Dimensions.Item2 ; j++)
+            string field_symbolic = game.ToString1D();
+
+            for(int i = 0; i < field_symbolic.Length; i++)
+            { 
+                SolidColorBrush b;
+                switch(field_symbolic[i])
                 {
-                    SolidColorBrush b;
-                    switch(game.GetCharArray()[i, j])
-                    {
-                        case player1:
-                            b = Brushes.Red;
-                            break;
-                        case player2:
-                            b = Brushes.Yellow;
-                            break;
-                        default:
-                            b = Brushes.LightGray;
-                            break;
-                    }
-                    visual_field[i + (game.Dimensions.Item2 - j - 1) * game.Dimensions.Item1].Fill = b;
+                    case Field.Field.Player1:
+                        b = Brushes.Red;
+                        break;
+                    case Field.Field.Player2:
+                        b = Brushes.Yellow;
+                        break;
+                    default:
+                        b = Brushes.LightGray;
+                        break;
                 }
+                visual_field[i].Fill = b;
+                
             }
             
             PlayerTurnDisplay.Content = gamestate == 0 ? P1NameGetter.Text : P2NameGetter.Text;
@@ -217,16 +223,14 @@ namespace VierGewinntExtrem
             char winner = game.CheckWinner();
             if(winner == ' ')
             {
-                foreach(char c in game.GetCharArray())
-                {
-                    if(c == ' ')
-                        return;
-                }
-
+                return;
+            }
+            if(!game.ToString1D().Contains(' '))
+            {
                 Tie();
             }
 
-            GameWon(gamestate == 0 ? P2NameGetter.Text : P1NameGetter.Text);
+            GameWon(winner == Field.Field.Player1 ? P1NameGetter.Text : P2NameGetter.Text);
             GameGrid.Visibility = Visibility.Collapsed;
         }
 

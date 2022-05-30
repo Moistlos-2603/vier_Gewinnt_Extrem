@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:VierGewinntExtrem"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
+    <Grid x:Name="Plane">
         <Button x:Name="StartButton" Content="Start" HorizontalAlignment="Center" Height="50" VerticalAlignment="Center" Width="188" Click="StartButton_Click"/>
         <ComboBox x:Name="GameTypeSelector" HorizontalAlignment="Center" Height="37" Margin="0,201,0,0" VerticalAlignment="Top" Width="188" SelectionChanged="GameTypeSelector_SelectionChanged"/>
         <TextBox x:Name="P1NameGetter" HorizontalAlignment="Left" Height="24" Margin="60,60,0,0" TextWrapping="Wrap" Text="Player1" VerticalAlignment="Top" Width="224"/>
@@ -19,5 +19,9 @@
         <Grid x:Name="ButtonGrid" HorizontalAlignment="Center" Height="48" Margin="0,7,0,0" VerticalAlignment="Top" Width="404"/>
         <Label x:Name="PlayerTurnDisplay" Content="t" HorizontalAlignment="Left" Height="25" Margin="23,10,0,0" VerticalAlignment="Top" Width="82" Background="Black" Foreground="#FF86DE0E"/>
         <Label x:Name="GameEndMSG" Content="" HorizontalAlignment="Left" Height="123" Margin="328,115,0,0" VerticalAlignment="Top" Width="154"/>
+        <Label x:Name="Player1Color" Content="" HorizontalAlignment="Left" Height="23" Margin="60,89,0,0" VerticalAlignment="Top" Width="23
+               " Background="Red"/>
+        <Label x:Name="Player2Color" Content="" HorizontalAlignment="Left" Height="23" Margin="717,89,0,0" VerticalAlignment="Top" Width="23
+               " RenderTransformOrigin="0.488,0.61" Background="#FFE6FF00"/>
     </Grid>
 </Window>
