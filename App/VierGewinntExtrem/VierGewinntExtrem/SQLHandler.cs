@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using System.Data;
+using System.Collections.Generic;
 
 namespace VierGewinntExtrem
 {
@@ -33,7 +34,7 @@ namespace VierGewinntExtrem
                 //No warning!
                 _ = ex;
                 // Silent error, dangerous!
-               
+
             }
         }
 
@@ -54,7 +55,48 @@ namespace VierGewinntExtrem
             //IDK if that works, it should execute the command
             //and return an int, which is deleted immediatly.
 
-            _ = this.command.ExecuteNonQuery();
+        }
+
+        // Insert Kommentar
+        public List<List<string>> Query(string cmd)
+        {
+
+            var data = new List<List<string>>();
+            using (var command = this.connection.CreateCommand())
+            {
+                command.CommandText = cmd;
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        data.Add(new List<string>());
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            data[data.Count - 1].Add(reader.GetString(i));
+                        }
+
+                    }
+                }
+            }
+            return data;
+        }
+
+        // Insert Kommentar 
+        public List<string> DataToString(List<List<string>> idk)
+        {
+            List<string> ausgabe = new List<string>();
+            int counter = 0;
+            foreach (List<string> id in idk)
+            {
+                ausgabe.Add("");
+                foreach (string s in id)
+                {
+                    ausgabe[counter] += s + ", ";
+                }
+                counter++;
+            }
+            return ausgabe;
         }
 
         ~SQLHandler()
