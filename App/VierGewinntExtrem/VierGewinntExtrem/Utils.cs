@@ -18,6 +18,12 @@ namespace Utils
             }
         }
 
+        /// <summary>
+        /// The string gets concated to it self i times.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="i"></param>
+        /// <returns>string</returns>
         public static string MulStrInt(string s, int i)
         {
             string temp = string.Empty;
@@ -29,6 +35,11 @@ namespace Utils
             return temp;
         }
 
+        /// <summary>
+        /// Returns if in a string all chars are equal.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns>bool</returns>
         public static bool AllEqual(string str)
         {
             for(int i = 1; i < str.Length; i++)

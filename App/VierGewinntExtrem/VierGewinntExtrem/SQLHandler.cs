@@ -1,42 +1,38 @@
-﻿using System;
-using System.Data.SqlClient;
+﻿using MySql.Data.MySqlClient;
 using System.Data;
 
 namespace VierGewinntExtrem
 {
     internal class SQLHandler
     {
-#if DEBUG
-        const string drive = "E:";
-#else
-    const string drive = "C:";
-#endif
-        SqlCommand command;
-        SqlConnection connection;
+        /// <summary>
+        /// I don't know if it works. Requieres probably work on it.
+        /// </summary>
+        private string connection_init_string;
+        //string query = "SELECT * FROM lehrer";
+        private MySqlConnection? connection;
+        private MySqlCommand? command;
+        private DataSet? data_set;
 
         public SQLHandler()
         {
-            connection = new("Server=localhost;Integrated security=SSPI;database=master");
-            string filedata = "CREATE DATABASE MyDatabase ON PRIMARY " +
-                              "(NAME = MyDatabase_Data, " +
-                              $"FILENAME = '{drive}:\\MyDatabaseData.mdf', " +
-                              "SIZE = 2MB, MAXSIZE = 10MB, FILEGROWTH = 10%)" +
-                              "LOG ON (NAME = MyDatabase_Log, " +
-                              $"FILENAME = '{drive}:\\MyDatabaseLog.ldf', " +
-                              "SIZE = 1MB, " +
-                              "MAXSIZE = 5MB, " +
-                              "FILEGROWTH = 10%)";
-
-            command = new(filedata, connection);
-
+            //connection stuff.
+            this.connection_init_string = "datasource=127.0.0.1;port=3306;username=root;password=;database=VierGewinntLiga;";
+            this.connection = new MySqlConnection(this.connection_init_string);
             try
             {
-                connection.Open();
-                command.ExecuteNonQuery();
+                // Open the database
+                this.connection.Open();
+                data_set = new DataSet();
+
+                // Finally close the connection*/
+                
             }
             catch (System.Exception ex)
             {
-
+                //No warning!
+                _ = ex;
+                // Silent error, dangerous!
             }
         }
 
@@ -47,15 +43,17 @@ namespace VierGewinntExtrem
         /// <exception cref="NotImplementedException"></exception>
         public void Execute(string cmd)
         {
-            command.CommandText = cmd;
-            command.ExecuteNonQuery();
-            throw new NotImplementedException();
+            this.command = new MySqlCommand(cmd);
+            //IDK if that works, it should execute the command
+            //and return an int, which is deleted immediatly.
+            _ = command.ExecuteNonQuery();
         }
 
         ~SQLHandler()
         {
-            command.Dispose();
-            connection?.Close();
+            //The handler closes the connection when the obj is deleted,
+            //no reconnection overhead while runtime.
+            this.connection?.Close();
         }
     }
 }

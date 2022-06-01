@@ -1,19 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Field;
+using System;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Text.RegularExpressions;
-using Field;
 
 namespace VierGewinntExtrem
 {
@@ -22,6 +13,8 @@ namespace VierGewinntExtrem
     /// </summary>
     public partial class MainWindow : Window
     {
+        //sql
+        private SQLHandler handler;
         //constants to avoid typos
         private const string mode_normal = "Normal", mode_3x3 = "3 x 3";
         private const char player1 = '1', player2 = '2';
@@ -47,6 +40,7 @@ namespace VierGewinntExtrem
             GameTypeSelector.Items.Add(mode_normal);
             GameTypeSelector.Items.Add(mode_3x3);
             Title = "VierGewinnt";
+            handler = new SQLHandler();
             //wait for startbutton to be pressed
 
             StartGame();
@@ -54,7 +48,7 @@ namespace VierGewinntExtrem
 
         private void StartGame()
         {
-            //TODO: make it deactivate everything except startbutton
+            //make everything except start button invisible.
             GameTypeSelector.Visibility = Visibility.Collapsed;
             P1NameGetter.Visibility = Visibility.Collapsed;
             P2NameGetter.Visibility = Visibility.Collapsed;
@@ -64,8 +58,14 @@ namespace VierGewinntExtrem
             ReplayButton.Visibility = Visibility.Collapsed;
             Player1Color.Visibility = Visibility.Collapsed;
             Player2Color.Visibility = Visibility.Collapsed;
+
         }
 
+        /// <summary>
+        /// Make gametype selection possible, hide previous UI element.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
             //make start button disapear + game selector visible
@@ -74,6 +74,11 @@ namespace VierGewinntExtrem
             //wait for game be selected
         }
 
+        /// <summary>
+        /// Check playername for validity to minimize security riscs + get the names.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             NameErrorMSG.Content = "";
@@ -84,12 +89,12 @@ namespace VierGewinntExtrem
                 NameErrorMSG.Content += "Player 1 name is not valid, must match: (\\w|[0-9])+\n";
                 is_name_valid = false;
             }
-            if(valid_name.Match(P2NameGetter.Text).Length != P2NameGetter.Text.Length)
+            if (valid_name.Match(P2NameGetter.Text).Length != P2NameGetter.Text.Length)
             {
                 NameErrorMSG.Content += "Player 2 name is not valid, must match: (\\w|[0-9])+";
                 is_name_valid = false;
             }
-            if(!is_name_valid)
+            if (!is_name_valid)
             {
 
                 return;
@@ -100,15 +105,21 @@ namespace VierGewinntExtrem
             P2NameGetter.Visibility = Visibility.Collapsed;
 
             //TODO: Make player into Database!
+            handler.Execute("");
 
             //Game actually gets initialized
             InitializeGame();
         }
 
+        /// <summary>
+        /// Game type gets chosen and wait for submit button to be pushed. Makes "name getters" visible and hides game type selector.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GameTypeSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string s = (string)GameTypeSelector.SelectedItem;
-            switch(s)
+            switch (s)
             {
                 case mode_normal:
                     game = new(7, 6, 4);
@@ -128,20 +139,23 @@ namespace VierGewinntExtrem
             NameSubmitButton.Visibility = Visibility.Visible;
         }
 
+        /// <summary>
+        /// Adds buttons and ellipses to the game. The quantity is determined by the game type. Sets up the start of the game. Makes visible whose turn it is.
+        /// </summary>
         private void InitializeGame()
         {
             (int, int) values = game.Dimensions;
             visual_field = new Ellipse[values.Item1 * values.Item2];
             controls = new Button[values.Item1];
-            
-            
-            for(int i = 0 ; i < values.Item1; i++)
-            {
-                GameGrid.ColumnDefinitions.Add(new() { Width = GridLength.Auto});
 
-                for(int j = 0 ; j < values.Item2; j++)
+
+            for (int i = 0; i < values.Item1; i++)
+            {
+                GameGrid.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
+
+                for (int j = 0; j < values.Item2; j++)
                 {
-                    GameGrid.RowDefinitions.Add(new() { Height = GridLength.Auto});
+                    GameGrid.RowDefinitions.Add(new() { Height = GridLength.Auto });
 
                     visual_field[i + j * values.Item1] = new Ellipse
                     {
@@ -156,7 +170,7 @@ namespace VierGewinntExtrem
                 }
 
                 //Add Butten to this row
-                ButtonGrid.ColumnDefinitions.Add(new() { Width = GridLength.Auto});
+                ButtonGrid.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
                 controls[i] = new();
                 controls[i].Width = ButtonGrid.Width / values.Item1;
                 controls[i].Height = ButtonGrid.Height;
@@ -168,21 +182,27 @@ namespace VierGewinntExtrem
             PlayerTurnDisplay.Visibility = Visibility.Visible;
         }
 
+        /// <summary>
+        /// Translates the index of the button to a row for the field. Adds player piece on that row. Repaints the whole field and checks for winner.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <exception cref="Exception"></exception>
         private void GenericControlButton_Clicked(object sender, RoutedEventArgs e)
         {
             int row = 0;
-            if(sender is Button)
+            if (sender is Button)
             {
-                if(((Button)sender).Parent is Grid)
+                if (((Button)sender).Parent is Grid)
                 {
                     row = ((Grid)((Button)sender).Parent).Children.IndexOf((Button)sender);
                     if (row == -1)
                         throw new Exception("Invalid Button");
                 }
             }
-            if(gamestate < 2)
+            if (gamestate < 2)
             {
-                if(game.Push(row, gamestate == 0 ? Player.player1 : Player.player2))
+                if (game.Push(row, gamestate == 0 ? Player.player1 : Player.player2))
                 {
                     gamestate ^= 1;
                 }
@@ -191,14 +211,17 @@ namespace VierGewinntExtrem
             EvaluateWinner();
         }
 
+        /// <summary>
+        /// Iterates thru the field and paints the ellipses based on the player character at the given index. Updates whose turn it is.
+        /// </summary>
         private void RePaint()
         {
             string field_symbolic = game.ToString1D();
 
-            for(int i = 0; i < field_symbolic.Length; i++)
-            { 
+            for (int i = 0; i < field_symbolic.Length; i++)
+            {
                 SolidColorBrush b;
-                switch(field_symbolic[i])
+                switch (field_symbolic[i])
                 {
                     case Field.Field.Player1:
                         b = Brushes.Red;
@@ -211,21 +234,24 @@ namespace VierGewinntExtrem
                         break;
                 }
                 visual_field[i].Fill = b;
-                
+
             }
-            
+
             PlayerTurnDisplay.Content = gamestate == 0 ? P1NameGetter.Text : P2NameGetter.Text;
             PlayerTurnDisplay.Foreground = gamestate == 0 ? Brushes.Red : Brushes.Yellow;
         }
 
+        /// <summary>
+        /// Returns back normally if no one won. Stops if a tie or a win happens.
+        /// </summary>
         private void EvaluateWinner()
         {
             char winner = game.CheckWinner();
-            if(winner == ' ')
+            if (winner == ' ')
             {
                 return;
             }
-            if(!game.ToString1D().Contains(' '))
+            if (!game.ToString1D().Contains(' '))
             {
                 Tie();
             }
@@ -234,18 +260,36 @@ namespace VierGewinntExtrem
             GameGrid.Visibility = Visibility.Collapsed;
         }
 
+        /// <summary>
+        ///Displays player name and hides game.
+        /// </summary>
         private void GameWon(string name)
         {
+            Player1Color.Visibility = Player2Color.Visibility = Visibility.Collapsed;
+            PlayerTurnDisplay.Visibility = Visibility.Collapsed;
+            foreach (UIElement uie in controls)
+                uie.Visibility = Visibility.Collapsed;
+
             GameEndMSG.Content = $"Congratulations,\n'{name}' won.";
             GameEndMSG.Visibility = Visibility.Visible;
-            ReplayButton.Visibility = Visibility.Visible;
-            //do database entry for the win
+            //TODO: database entry for the win
+            handler.Execute("");
         }
 
+        /// <summary>
+        /// Displays game end and hides the game.
+        /// </summary>
         private void Tie()
         {
+            Player1Color.Visibility = Player2Color.Visibility = Visibility.Collapsed;
+            PlayerTurnDisplay.Visibility = Visibility.Collapsed;
+            foreach (UIElement uie in controls)
+                uie.Visibility = Visibility.Collapsed;
+
             GameEndMSG.Content = $"No one won.";
-            ReplayButton.Visibility = Visibility.Visible;
+            GameEndMSG.Visibility = Visibility.Visible;
+            //TODO: database entry for this match
+            handler.Execute("");
         }
     }
 }
