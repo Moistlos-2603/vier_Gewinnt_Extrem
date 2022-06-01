@@ -231,7 +231,7 @@ namespace Field
                 }
 
                 m = diagonal_to_top[i].Match(self);
-                if (m.Success && (m.Index + win_len - 1) % width <= width - win_len)
+                if (m.Success && (m.Index - win_len) % width <= width - win_len)
                 {
                     winner = m.Value[0];
                     break;

@@ -74,6 +74,9 @@ namespace VierGewinntExtrem
             StartButton.Visibility = Visibility.Collapsed;
             GameTypeSelector.Visibility = Visibility.Visible;
             //wait for game be selected
+            GameTypeSelector.SelectionChanged -= GameTypeSelector_SelectionChanged;
+            GameTypeSelector.SelectedIndex = -1;
+            GameTypeSelector.SelectionChanged += GameTypeSelector_SelectionChanged;
         }
 
         /// <summary>
@@ -251,13 +254,15 @@ namespace VierGewinntExtrem
         private void EvaluateWinner()
         {
             char winner = game.CheckWinner();
+            
+            if (!game.ToString1D().Contains(' ') && winner == ' ')
+            {
+                Tie();
+                return;
+            }
             if (winner == ' ')
             {
                 return;
-            }
-            if (!game.ToString1D().Contains(' '))
-            {
-                Tie();
             }
 
             GameWon(winner == Field.Field.Player1 ? P1NameGetter.Text : P2NameGetter.Text);
@@ -282,6 +287,7 @@ namespace VierGewinntExtrem
 
             GameEndMSG.Content = $"Congratulations,\n'{name}' won.";
             GameEndMSG.Visibility = Visibility.Visible;
+
             //TODO: database entry for the win
             handler.Execute("");
 
@@ -301,6 +307,7 @@ namespace VierGewinntExtrem
 
             GameEndMSG.Content = $"No one won.";
             GameEndMSG.Visibility = Visibility.Visible;
+
             //TODO: database entry for this match
             handler.Execute("");
 
@@ -308,10 +315,13 @@ namespace VierGewinntExtrem
             DeleteVisualField();
         }
 
+        /// <summary>
+        /// Deletes all ellipses and "row buttons" cleanly.
+        /// </summary>
         private void DeleteVisualField()
         {
             GameGrid.Children.Clear();
-            controls = null;
+            ButtonGrid.Children.Clear();
         }
     }
 }
