@@ -46,7 +46,7 @@ namespace VierGewinntExtrem
             this.command = new MySqlCommand(cmd);
             //IDK if that works, it should execute the command
             //and return an int, which is deleted immediatly.
-            _ = command.ExecuteNonQuery();
+            //_ = command.ExecuteNonQuery();
         }
 
         ~SQLHandler()

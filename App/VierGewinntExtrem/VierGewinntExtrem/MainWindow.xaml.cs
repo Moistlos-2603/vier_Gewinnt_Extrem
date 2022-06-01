@@ -49,6 +49,7 @@ namespace VierGewinntExtrem
         private void StartGame()
         {
             //make everything except start button invisible.
+
             GameTypeSelector.Visibility = Visibility.Collapsed;
             P1NameGetter.Visibility = Visibility.Collapsed;
             P2NameGetter.Visibility = Visibility.Collapsed;
@@ -59,6 +60,7 @@ namespace VierGewinntExtrem
             Player1Color.Visibility = Visibility.Collapsed;
             Player2Color.Visibility = Visibility.Collapsed;
 
+            StartButton.Visibility = Visibility.Visible;
         }
 
         /// <summary>
@@ -144,6 +146,8 @@ namespace VierGewinntExtrem
         /// </summary>
         private void InitializeGame()
         {
+            GameGrid.Visibility = Visibility.Visible;
+
             (int, int) values = game.Dimensions;
             visual_field = new Ellipse[values.Item1 * values.Item2];
             controls = new Button[values.Item1];
@@ -260,6 +264,12 @@ namespace VierGewinntExtrem
             GameGrid.Visibility = Visibility.Collapsed;
         }
 
+        private void ReplayButton_Click(object sender, RoutedEventArgs e)
+        {
+            StartGame();
+            ReplayButton.Visibility = Visibility.Hidden;
+        }
+
         /// <summary>
         ///Displays player name and hides game.
         /// </summary>
@@ -274,6 +284,9 @@ namespace VierGewinntExtrem
             GameEndMSG.Visibility = Visibility.Visible;
             //TODO: database entry for the win
             handler.Execute("");
+
+            ReplayButton.Visibility = Visibility.Visible;
+            DeleteVisualField();
         }
 
         /// <summary>
@@ -290,6 +303,15 @@ namespace VierGewinntExtrem
             GameEndMSG.Visibility = Visibility.Visible;
             //TODO: database entry for this match
             handler.Execute("");
+
+            ReplayButton.Visibility = Visibility.Visible;
+            DeleteVisualField();
+        }
+
+        private void DeleteVisualField()
+        {
+            GameGrid.Children.Clear();
+            controls = null;
         }
     }
 }
