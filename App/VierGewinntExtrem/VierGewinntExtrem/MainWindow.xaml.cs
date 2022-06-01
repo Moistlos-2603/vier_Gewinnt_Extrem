@@ -99,6 +99,11 @@ namespace VierGewinntExtrem
                 NameErrorMSG.Content += "Player 2 name is not valid, must match: (\\w|[0-9])+";
                 is_name_valid = false;
             }
+            if(P1NameGetter.Text == P2NameGetter.Text)
+            {
+                NameErrorMSG.Content += "Names must be unequal.";
+                is_name_valid = false;
+            }
             if (!is_name_valid)
             {
 
