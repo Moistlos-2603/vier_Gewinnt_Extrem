@@ -28,7 +28,7 @@ namespace VierGewinntExtrem
                 // Open the database.
                 this.connection.Open();
                 data_set = new DataSet();
-
+                data_table = new DataTable();
 
             }
             catch (System.Exception ex)
