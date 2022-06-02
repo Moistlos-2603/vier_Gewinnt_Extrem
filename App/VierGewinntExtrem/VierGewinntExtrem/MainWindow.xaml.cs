@@ -368,7 +368,9 @@ namespace VierGewinntExtrem
                 {
                     //Tournament tie
                     //TODO: idk implement maybe some sql
-                    return;
+                    DeleteVisualField();
+                    game = new(7, 6, 4);
+                    InitializeGame();
                 }
                 if (winner == ' ')
                 {
