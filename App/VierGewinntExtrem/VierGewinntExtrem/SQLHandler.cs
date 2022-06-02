@@ -40,7 +40,7 @@ namespace VierGewinntExtrem
         }
 
         /// <summary>
-        /// This executes the command, gives no feedback if an error occured.
+        /// Execute SQL Insert Commands
         /// </summary>
         /// <param name="cmd"></param>
         /// <exception cref="NotImplementedException"></exception>
@@ -58,11 +58,10 @@ namespace VierGewinntExtrem
             adapter = new MySqlDataAdapter(dbcommand);
         }
 
+
         /// <summary>
-        /// Executes the command and gives the queried information back.
+        /// Execute SQL Select requests and returns a List of a Lists of strings
         /// </summary>
-        /// <param name="cmd"></param>
-        /// <returns></returns>
         public List<List<string>> Query(string cmd)
         {
             /*
@@ -98,10 +97,8 @@ namespace VierGewinntExtrem
         }
 
         /// <summary>
-        /// Converts the output of the query into an readable string.
+        /// Converts a List of Lists of strings (List<List<string>>) and converts it into a list of strings, where every string resembles one entry
         /// </summary>
-        /// <param name="idk"></param>
-        /// <returns></returns>
         public List<string> DataToString(List<List<string>> idk)
         {
             /*
