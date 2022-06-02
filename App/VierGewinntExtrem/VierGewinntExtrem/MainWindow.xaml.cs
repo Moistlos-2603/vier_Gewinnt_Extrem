@@ -195,7 +195,9 @@ namespace VierGewinntExtrem
                 ButtonGrid.Children.Add(controls[i]);
             }
             PlayerTurnDisplay.Content = P1NameGetter.Text;
+            gamestate = 0;
             PlayerTurnDisplay.Visibility = Visibility.Visible;
+            PlayerTurnDisplay.Foreground = Brushes.Red;
         }
 
         /// <summary>
@@ -324,7 +326,8 @@ namespace VierGewinntExtrem
             ToMainMenu.Visibility = Visibility.Visible;
             Clear.Visibility = Visibility.Visible;
 
-            //Make the SQL stuff.
+            //Querry the attributes for each table and update the corresponding DataFieldn
+            //Update immediatly since the data is in a state, which is overwritten after the next command execution.
             handler.Execute("SELECT * FROM `spiele`");
             DataBaseGrid.ItemsSource = handler.DataTable?.DefaultView;
 
@@ -361,6 +364,19 @@ namespace VierGewinntExtrem
             handler.Execute("DELETE FROM `spieleliga`");
             handler.Execute("DELETE FROM `spielerliga`");
             handler.Execute("DELETE FROM `spiele`");
+
+            //Reconnect to avoid errors; if not done the change is not applied. 
+            handler = new();
+
+            //Update the tables.
+            handler.Execute("SELECT * FROM `spiele`");
+            DataBaseGrid.ItemsSource = handler.DataTable?.DefaultView;
+
+            handler.Execute("SELECT * FROM `spieleliga`");
+            TableGrid2.ItemsSource = handler.DataTable?.DefaultView;
+
+            handler.Execute("SELECT * FROM `spielerliga`");
+            TableGrid2.ItemsSource = handler.DataTable?.DefaultView;
         }
 
         /// <summary>
