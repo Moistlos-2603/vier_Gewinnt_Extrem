@@ -39,7 +39,7 @@ namespace VierGewinntExtrem
         }
 
         /// <summary>
-        /// This maybe doesn't work!
+        /// Execute SQL Insert Commands
         /// </summary>
         /// <param name="cmd"></param>
         /// <exception cref="NotImplementedException"></exception>
@@ -57,7 +57,10 @@ namespace VierGewinntExtrem
 
         }
 
-        // Insert Kommentar
+
+        /// <summary>
+        /// Execute SQL Select requests and returns a List of a Lists of strings
+        /// </summary>
         public List<List<string>> Query(string cmd)
         {
 
@@ -82,7 +85,9 @@ namespace VierGewinntExtrem
             return data;
         }
 
-        // Insert Kommentar 
+        /// <summary>
+        /// Converts a List of Lists of strings (List<List<string>>) and converts it into a list of strings, where every string resembles one entry
+        /// </summary>
         public List<string> DataToString(List<List<string>> idk)
         {
             List<string> ausgabe = new List<string>();
