@@ -177,6 +177,9 @@ namespace VierGewinntExtrem
             {
                 if(adapter != null && adapter != null)
                 {
+                    //Data table needs to be renewed, otherwise it doesn't work.
+                    //Fill() fills the table on top what already exists.
+                    data_table = new();
                     adapter.Fill(data_table);
                 }
                 return data_table;

@@ -19,7 +19,7 @@
         <Label x:Name="NameErrorMSG" Content="" HorizontalAlignment="Left" Height="53" Margin="143,349,0,0" VerticalAlignment="Top" Width="337" Background="#FFFDFDFD" Foreground="Red" Grid.Column="1"/>
         <Grid x:Name="GameGrid" HorizontalAlignment="Left" Margin="90,60,0,0" Width="404" Height="331" VerticalAlignment="Top" Grid.Column="1">
         </Grid>
-        <Button x:Name="ReplayButton" Content="Play again" HorizontalAlignment="Left" Height="45" Margin="222,294,0,0" VerticalAlignment="Top" Width="147" Click="ReplayButton_Click" Grid.Column="1"/>
+        <Button x:Name="ReplayButton" Content="To main menu" HorizontalAlignment="Left" Height="45" Margin="222,294,0,0" VerticalAlignment="Top" Width="147" Click="ReplayButton_Click" Grid.Column="1"/>
         <Grid x:Name="ButtonGrid" HorizontalAlignment="Left" Height="48" Margin="90,7,0,0" VerticalAlignment="Top" Width="404" Grid.Column="1"/>
         <Label x:Name="PlayerTurnDisplay" Content="t" HorizontalAlignment="Left" Height="25" Margin="23,10,0,0" VerticalAlignment="Top" Width="82" Background="Black" Foreground="Red"/>
         <Label x:Name="GameEndMSG" Content="" HorizontalAlignment="Left" Height="123" Margin="220,115,0,0" VerticalAlignment="Top" Width="154" Grid.Column="1"/>

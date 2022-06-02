@@ -335,7 +335,7 @@ namespace VierGewinntExtrem
             TableGrid2.ItemsSource = handler.DataTable?.DefaultView;
 
             handler.Execute("SELECT * FROM `spielerliga`");
-            TableGrid2.ItemsSource = handler.DataTable?.DefaultView;
+            TableGrid3.ItemsSource = handler.DataTable?.DefaultView;
         }
 
         private void ToMainMenu_Click(object sender, RoutedEventArgs e)
@@ -345,10 +345,11 @@ namespace VierGewinntExtrem
             TableGrid2.Visibility = Visibility.Collapsed;
             TableGrid3.Visibility = Visibility.Collapsed;
 
-            //make contents of the main menu visible
+            //Make contents of the main menu visible.
             StartButton.Visibility = Visibility.Visible;
             ToDatabase.Visibility = Visibility.Visible;
 
+            //Hide Buttons that are not in the main menu.
             ToMainMenu.Visibility = Visibility.Collapsed;
             Clear.Visibility = Visibility.Collapsed;
         }
