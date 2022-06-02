@@ -348,7 +348,7 @@ namespace VierGewinntExtrem
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
             //Execute the clear command.
-            handler.Execute("DELETE FROM `spieleliga`, ");
+            handler.Execute("DELETE FROM `spieleliga`");
             handler.Execute("DELETE FROM `spielerliga`");
             handler.Execute("DELETE FROM `spiele`");
 
