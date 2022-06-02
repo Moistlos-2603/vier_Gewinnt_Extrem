@@ -248,8 +248,10 @@ namespace VierGewinntExtrem
             //Iterate through all the x-axis.
             for (int i = 0; i < values.Item1; i++)
             {
+                //Prepare grid to make it work.
                 GameGrid.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
 
+                //Add all ellipses. Iterate through an y 
                 for (int j = 0; j < values.Item2; j++)
                 {
                     GameGrid.RowDefinitions.Add(new() { Height = GridLength.Auto });
@@ -275,11 +277,13 @@ namespace VierGewinntExtrem
                 controls[i].Click += GenericControlButton_Clicked;
                 ButtonGrid.Children.Add(controls[i]);
             }
+            //Supress index errors, names list could be to short at the end of the game.
             if(tournament_ && (tnames.Count > 2*matches + 1))
             {
                 P1NameGetter.Text = tnames[2*matches];
                 P2NameGetter.Text = tnames[2*matches + 1];
             }
+            //Game starts at player 1s turn, so set the gamestate and the name.
             PlayerTurnDisplay.Content = P1NameGetter.Text;
             gamestate = 0;
             PlayerTurnDisplay.Visibility = Visibility.Visible;
@@ -295,10 +299,12 @@ namespace VierGewinntExtrem
         private void GenericControlButton_Clicked(object sender, RoutedEventArgs e)
         {
             int row = 0;
+            //error handeling
             if (sender is Button)
             {
                 if (((Button)sender).Parent is Grid)
                 {
+                    //Getting the index, since it's corresponding with the width.
                     row = ((Grid)((Button)sender).Parent).Children.IndexOf((Button)sender);
                     if (row == -1)
                         throw new Exception("Invalid Button");
@@ -306,11 +312,13 @@ namespace VierGewinntExtrem
             }
             if (gamestate < 2)
             {
+                //If gamestate is not invalid place the player on the specified field, determined by the row.
                 if (game.Push(row, gamestate == 0 ? Player.player1 : Player.player2))
                 {
                     gamestate ^= 1;
                 }
             }
+            //Redraw the field and try to find the Winner, if one exists.
             RePaint();
             EvaluateWinner();
         }
@@ -324,6 +332,7 @@ namespace VierGewinntExtrem
 
             for (int i = 0; i < field_symbolic.Length; i++)
             {
+                //Color every ellipse to the right color.
                 SolidColorBrush b;
                 switch (field_symbolic[i])
                 {
@@ -337,10 +346,12 @@ namespace VierGewinntExtrem
                         b = Brushes.LightGray;
                         break;
                 }
+                //Both arrays are one dimensional, so the index matches the rignt ellipse with the collor;
                 visual_field[i].Fill = b;
 
             }
 
+            //Change the names and colors of the field at the top left hand side, so the player know whose turn it is.
             PlayerTurnDisplay.Content = gamestate == 0 ? P1NameGetter.Text : P2NameGetter.Text;
             PlayerTurnDisplay.Foreground = gamestate == 0 ? Brushes.Red : Brushes.Yellow;
         }
@@ -383,11 +394,13 @@ namespace VierGewinntExtrem
                 }
                 if(tnames.Count == 1)
                 {
+                    //Get the winner and give it as an argument to the GameWon method. Return so no further iterations of the game will be initialized and played.
                     string absolute_winner = winner == Field.Field.Player1 ? P1NameGetter.Text : P2NameGetter.Text;
                     DeleteVisualField();
                     GameWon(absolute_winner);
                     return;
                 }
+                //Return to the game with an altered gamestate.
                 DeleteVisualField();
                 game = new(7, 6, 4);
                 InitializeGame();
@@ -395,8 +408,10 @@ namespace VierGewinntExtrem
             }
             else
             {
+                //Normal and 3x3 checks.
                 char winner = game.CheckWinner();
 
+                //A Tie
                 if (!game.ToString1D().Contains(' ') && winner == ' ')
                 {
                     Tie();
