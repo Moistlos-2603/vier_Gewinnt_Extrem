@@ -115,7 +115,7 @@ namespace VierGewinntExtrem
             P2NameGetter.Visibility = Visibility.Collapsed;
 
             //TODO: Make player into Database!
-            handler.Execute("");
+            //handler.Execute("INSERT INTO `spiele` (`idSpiele`, `spieler`, `spieler1`, `Gewinner`) VALUES ('', 'wer', 'asdf', '1'), ('', 'adsf', 'vchnd', '2')");
 
             //Game actually gets initialized
             InitializeGame();
@@ -292,9 +292,11 @@ namespace VierGewinntExtrem
 
             GameEndMSG.Content = $"Congratulations,\n'{name}' won.";
             GameEndMSG.Visibility = Visibility.Visible;
-
+            bool winner;
+             
+            
             //TODO: database entry for the win
-            handler.Execute("");
+            handler.Execute("INSERT INTO `spiele` (`idSpiele`, `spieler`, `spieler1`, `Gewinner`) VALUES ('', '" + P1NameGetter.Text + "', '" + P2NameGetter.Text +"', '1')");
 
             ReplayButton.Visibility = Visibility.Visible;
             DeleteVisualField();
@@ -314,7 +316,8 @@ namespace VierGewinntExtrem
             GameEndMSG.Visibility = Visibility.Visible;
 
             //TODO: database entry for this match
-            handler.Execute("");
+            //handler.Execute("");
+
 
             ReplayButton.Visibility = Visibility.Visible;
             DeleteVisualField();
