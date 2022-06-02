@@ -316,21 +316,31 @@ namespace VierGewinntExtrem
             //Make everything invisible.
             StartButton.Visibility = Visibility.Collapsed;
             ToDatabase.Visibility = Visibility.Collapsed;
+            TableGrid2.Visibility = Visibility.Visible;
+            TableGrid3.Visibility = Visibility.Visible;
 
             //Make the grid visible.
             DataBaseGrid.Visibility = Visibility.Visible;
-
-            //Fill the grid.
-            DataBaseGrid.ItemsSource = handler.DataTable?.DefaultView;
-
             ToMainMenu.Visibility = Visibility.Visible;
             Clear.Visibility = Visibility.Visible;
+
+            //Make the SQL stuff.
+            handler.Execute("SELECT * FROM `spiele`");
+            DataBaseGrid.ItemsSource = handler.DataTable?.DefaultView;
+
+            handler.Execute("SELECT * FROM `spieleliga`");
+            TableGrid2.ItemsSource = handler.DataTable?.DefaultView;
+
+            handler.Execute("SELECT * FROM `spielerliga`");
+            TableGrid2.ItemsSource = handler.DataTable?.DefaultView;
         }
 
         private void ToMainMenu_Click(object sender, RoutedEventArgs e)
         {
             //Hide database.
             DataBaseGrid.Visibility = Visibility.Collapsed;
+            TableGrid2.Visibility = Visibility.Collapsed;
+            TableGrid3.Visibility = Visibility.Collapsed;
 
             //make contents of the main menu visible
             StartButton.Visibility = Visibility.Visible;
@@ -351,8 +361,6 @@ namespace VierGewinntExtrem
             handler.Execute("DELETE FROM `spieleliga`");
             handler.Execute("DELETE FROM `spielerliga`");
             handler.Execute("DELETE FROM `spiele`");
-
-
         }
 
         /// <summary>
@@ -370,7 +378,6 @@ namespace VierGewinntExtrem
 
             //TODO: database entry for this match
             handler.Execute("INSERT INTO `spiele` (`idSpiele`, `spieler`, `spieler1`, `Gewinner`) VALUES ('', '" + P1NameGetter.Text + "', '" + P2NameGetter.Text + "', '')");
-
 
             ReplayButton.Visibility = Visibility.Visible;
             DeleteVisualField();
