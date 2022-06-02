@@ -18,6 +18,8 @@ namespace VierGewinntExtrem
         private DataTable data_table;
         private MySqlDataAdapter adapter;
 
+        //for error handeling
+        private bool initialized;
         public SQLHandler()
         {
             //connection stuff.
@@ -29,12 +31,29 @@ namespace VierGewinntExtrem
                 this.connection.Open();
                 data_set = new DataSet();
                 data_table = new DataTable();
-
+                initialized = true;
             }
             catch (System.Exception ex)
             {
                 //No warning!
                 _ = ex;
+                //       No silent error?
+                //  ⣞⢽⢪⢣⢣⢫⡺⡵⣝⡮⣗⢷⢽⢽⢽⣮⡷⡽⣜⣜⢮⢺⣜⢷⢽⢝⡽⣝⣝
+                //⠀⣞⢽⢪⢣⢣⢣⢫⡺⡵⣝⡮⣗⢷⢽⢽⢽⣮⡷⡽⣜⣜⢮⢺⣜⢷⢽⢝⡽⣝⠏
+                //⠸⡸⠜⠕⠕⠁⢁⢇⢏⢽⢺⣪⡳⡝⣎⣏⢯⢞⡿⣟⣷⣳⢯⡷⣽⢽⢯⣳⣫⠇
+                //⠀⠀⢀⢀⢄⢬⢪⡪⡎⣆⡈⠚⠜⠕⠇⠗⠝⢕⢯⢫⣞⣯⣿⣻⡽⣏⢗⣗⠏⠀
+                //⠀⠪⡪⡪⣪⢪⢺⢸⢢⢓⢆⢤⢀⠀⠀⠀⠀⠈⢊⢞⡾⣿⡯⣏⢮⠷⠁⠀⠀
+                //⠀⠀⠀⠈⠊⠆⡃⠕⢕⢇⢇⢇⢇⢇⢏⢎⢎⢆⢄⠀⢑⣽⣿⢝⠲⠉⠀⠀⠀⠀
+                //⠀⠀⠀⠀⠀⡿⠂⠠⠀⡇⢇⠕⢈⣀⠀⠁⠡⠣⡣⡫⣂⣿⠯⢪⠰⠂⠀⠀⠀⠀
+                //⠀⠀⠀⠀⡦⡙⡂⢀⢤⢣⠣⡈⣾⡃⠠⠄⠀⡄⢱⣌⣶⢏⢊⠂⠀⠀⠀⠀⠀⠀
+                //⠀⠀⠀⠀⢝⡲⣜⡮⡏⢎⢌⢂⠙⠢⠐⢀⢘⢵⣽⣿⡿⠁⠁⠀⠀⠀⠀⠀⠀⠀
+                //⠀⠀⠀⠀⠨⣺⡺⡕⡕⡱⡑⡆⡕⡅⡕⡜⡼⢽⡻⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                //⠀⠀⠀⠀⣼⣳⣫⣾⣵⣗⡵⡱⡡⢣⢑⢕⢜⢕⡝⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                //⠀⠀⠀⣴⣿⣾⣿⣿⣿⡿⡽⡑⢌⠪⡢⡣⣣⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                //⠀⠀⠀⡟⡾⣿⢿⢿⢵⣽⣾⣼⣘⢸⢸⣞⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                //⠀⠀⠀⠀⠁⠇⠡⠩⡫⢿⣝⡻⡮⣒⢽⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+
+                initialized = false;
                 // Silent error, dangerous!
             }
         }
@@ -46,6 +65,9 @@ namespace VierGewinntExtrem
         /// <exception cref="NotImplementedException"></exception>
         public void Execute(string cmd)
         {
+            //If no connection is done just return null, so it doesn't crash.
+            if (!initialized) return;
+
             MySqlCommand dbcommand = connection.CreateCommand();
             dbcommand.CommandText = cmd;
             //command.Parameters.Add("@username", txtUserName.Text);
@@ -70,6 +92,10 @@ namespace VierGewinntExtrem
              * Executes sayed command and iterates through the output to append everything to the data list.
              * Returns the data list.
              */
+
+            //If no connection is done just return null, so it doesn't crash.
+            if(!initialized) return null;
+
             var data = new List<List<string>>();
             
             using (var command = this.connection.CreateCommand())
@@ -102,6 +128,8 @@ namespace VierGewinntExtrem
         /// </summary>
         public List<string> DataToString(List<List<string>> idk)
         {
+            //Error handeling.
+            if(idk == null) return null;
             /*
              * Iterates through the as Data defined input and concats it to an continous string.
              * The concated data is seperated by an ','.
@@ -147,7 +175,7 @@ namespace VierGewinntExtrem
         {
             get
             {
-                if(adapter != null)
+                if(adapter != null && adapter != null)
                 {
                     adapter.Fill(data_table);
                 }

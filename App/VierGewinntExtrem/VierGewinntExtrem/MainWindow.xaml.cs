@@ -195,7 +195,9 @@ namespace VierGewinntExtrem
                 ButtonGrid.Children.Add(controls[i]);
             }
             PlayerTurnDisplay.Content = P1NameGetter.Text;
+            gamestate = 0;
             PlayerTurnDisplay.Visibility = Visibility.Visible;
+            PlayerTurnDisplay.Foreground = Brushes.Red;
         }
 
         /// <summary>
@@ -316,21 +318,32 @@ namespace VierGewinntExtrem
             //Make everything invisible.
             StartButton.Visibility = Visibility.Collapsed;
             ToDatabase.Visibility = Visibility.Collapsed;
+            TableGrid2.Visibility = Visibility.Visible;
+            TableGrid3.Visibility = Visibility.Visible;
 
             //Make the grid visible.
             DataBaseGrid.Visibility = Visibility.Visible;
-
-            //Fill the grid.
-            DataBaseGrid.ItemsSource = handler.DataTable?.DefaultView;
-
             ToMainMenu.Visibility = Visibility.Visible;
             Clear.Visibility = Visibility.Visible;
+
+            //Querry the attributes for each table and update the corresponding DataFieldn
+            //Update immediatly since the data is in a state, which is overwritten after the next command execution.
+            handler.Execute("SELECT * FROM `spiele`");
+            DataBaseGrid.ItemsSource = handler.DataTable?.DefaultView;
+
+            handler.Execute("SELECT * FROM `spieleliga`");
+            TableGrid2.ItemsSource = handler.DataTable?.DefaultView;
+
+            handler.Execute("SELECT * FROM `spielerliga`");
+            TableGrid2.ItemsSource = handler.DataTable?.DefaultView;
         }
 
         private void ToMainMenu_Click(object sender, RoutedEventArgs e)
         {
             //Hide database.
             DataBaseGrid.Visibility = Visibility.Collapsed;
+            TableGrid2.Visibility = Visibility.Collapsed;
+            TableGrid3.Visibility = Visibility.Collapsed;
 
             //make contents of the main menu visible
             StartButton.Visibility = Visibility.Visible;
@@ -348,11 +361,22 @@ namespace VierGewinntExtrem
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
             //Execute the clear command.
-            handler.Execute("DELETE FROM `spieleliga`, ");
+            handler.Execute("DELETE FROM `spieleliga`");
             handler.Execute("DELETE FROM `spielerliga`");
             handler.Execute("DELETE FROM `spiele`");
 
+            //Reconnect to avoid errors; if not done the change is not applied. 
+            handler = new();
 
+            //Update the tables.
+            handler.Execute("SELECT * FROM `spiele`");
+            DataBaseGrid.ItemsSource = handler.DataTable?.DefaultView;
+
+            handler.Execute("SELECT * FROM `spieleliga`");
+            TableGrid2.ItemsSource = handler.DataTable?.DefaultView;
+
+            handler.Execute("SELECT * FROM `spielerliga`");
+            TableGrid2.ItemsSource = handler.DataTable?.DefaultView;
         }
 
         /// <summary>
@@ -370,7 +394,6 @@ namespace VierGewinntExtrem
 
             //TODO: database entry for this match
             handler.Execute("INSERT INTO `spiele` (`idSpiele`, `spieler`, `spieler1`, `Gewinner`) VALUES ('', '" + P1NameGetter.Text + "', '" + P2NameGetter.Text + "', '')");
-
 
             ReplayButton.Visibility = Visibility.Visible;
             DeleteVisualField();

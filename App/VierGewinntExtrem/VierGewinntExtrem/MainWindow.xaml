@@ -5,27 +5,33 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VierGewinntExtrem"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="500" Width="800">
     <Grid x:Name="Plane">
-        <Button x:Name="StartButton" Content="Start" HorizontalAlignment="Center" Height="50" VerticalAlignment="Center" Width="188" Click="StartButton_Click"/>
-        <ComboBox x:Name="GameTypeSelector" HorizontalAlignment="Center" Height="37" Margin="0,201,0,0" VerticalAlignment="Top" Width="188" SelectionChanged="GameTypeSelector_SelectionChanged"/>
-        <TextBox x:Name="P1NameGetter" HorizontalAlignment="Left" Height="24" Margin="60,60,0,0" TextWrapping="Wrap" Text="Player1" VerticalAlignment="Top" Width="224"/>
-        <TextBox x:Name="P2NameGetter" Height="24" Margin="0,60,60,0" TextWrapping="Wrap" Text="Player2" VerticalAlignment="Top" HorizontalAlignment="Right" Width="224"/>
-        <Button x:Name="NameSubmitButton" Content="Submit" HorizontalAlignment="Left" Height="45" Margin="332,299,0,0" VerticalAlignment="Top" Width="145" Click="Button_Click"/>
-        <Label x:Name="NameErrorMSG" Content="" HorizontalAlignment="Left" Height="53" Margin="251,349,0,0" VerticalAlignment="Top" Width="337" Background="#FFFDFDFD" Foreground="Red"/>
-        <Grid x:Name="GameGrid" HorizontalAlignment="Center" Margin="0,60,0,0" Width="404" Height="331" VerticalAlignment="Top">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="27*"/>
+            <ColumnDefinition Width="173*"/>
+        </Grid.ColumnDefinitions>
+        <Button x:Name="StartButton" Content="Start" HorizontalAlignment="Left" Height="50" VerticalAlignment="Center" Width="188" Click="StartButton_Click" Grid.Column="1" Margin="198,0,0,0"/>
+        <ComboBox x:Name="GameTypeSelector" HorizontalAlignment="Left" Height="37" Margin="198,201,0,0" VerticalAlignment="Top" Width="188" SelectionChanged="GameTypeSelector_SelectionChanged" Grid.Column="1"/>
+        <TextBox x:Name="P1NameGetter" HorizontalAlignment="Left" Height="24" Margin="60,60,0,0" TextWrapping="Wrap" Text="Player1" VerticalAlignment="Top" Width="224" Grid.ColumnSpan="2"/>
+        <TextBox x:Name="P2NameGetter" Height="24" Margin="0,60,60,0" TextWrapping="Wrap" Text="Player2" VerticalAlignment="Top" HorizontalAlignment="Right" Width="224" Grid.Column="1"/>
+        <Button x:Name="NameSubmitButton" Content="Submit" HorizontalAlignment="Left" Height="45" Margin="224,299,0,0" VerticalAlignment="Top" Width="145" Click="Button_Click" Grid.Column="1"/>
+        <Label x:Name="NameErrorMSG" Content="" HorizontalAlignment="Left" Height="53" Margin="143,349,0,0" VerticalAlignment="Top" Width="337" Background="#FFFDFDFD" Foreground="Red" Grid.Column="1"/>
+        <Grid x:Name="GameGrid" HorizontalAlignment="Left" Margin="90,60,0,0" Width="404" Height="331" VerticalAlignment="Top" Grid.Column="1">
         </Grid>
-        <Button x:Name="ReplayButton" Content="Play again" HorizontalAlignment="Left" Height="45" Margin="330,294,0,0" VerticalAlignment="Top" Width="147" Click="ReplayButton_Click"/>
-        <Grid x:Name="ButtonGrid" HorizontalAlignment="Center" Height="48" Margin="0,7,0,0" VerticalAlignment="Top" Width="404"/>
-        <Label x:Name="PlayerTurnDisplay" Content="t" HorizontalAlignment="Left" Height="25" Margin="23,10,0,0" VerticalAlignment="Top" Width="82" Background="Black" Foreground="#FF86DE0E"/>
-        <Label x:Name="GameEndMSG" Content="" HorizontalAlignment="Left" Height="123" Margin="328,115,0,0" VerticalAlignment="Top" Width="154"/>
+        <Button x:Name="ReplayButton" Content="Play again" HorizontalAlignment="Left" Height="45" Margin="222,294,0,0" VerticalAlignment="Top" Width="147" Click="ReplayButton_Click" Grid.Column="1"/>
+        <Grid x:Name="ButtonGrid" HorizontalAlignment="Left" Height="48" Margin="90,7,0,0" VerticalAlignment="Top" Width="404" Grid.Column="1"/>
+        <Label x:Name="PlayerTurnDisplay" Content="t" HorizontalAlignment="Left" Height="25" Margin="23,10,0,0" VerticalAlignment="Top" Width="82" Background="Black" Foreground="Red"/>
+        <Label x:Name="GameEndMSG" Content="" HorizontalAlignment="Left" Height="123" Margin="220,115,0,0" VerticalAlignment="Top" Width="154" Grid.Column="1"/>
         <Label x:Name="Player1Color" Content="" HorizontalAlignment="Left" Height="23" Margin="60,89,0,0" VerticalAlignment="Top" Width="23
                " Background="Red"/>
-        <Label x:Name="Player2Color" Content="" HorizontalAlignment="Left" Height="23" Margin="717,89,0,0" VerticalAlignment="Top" Width="23
-               " RenderTransformOrigin="0.488,0.61" Background="#FFE6FF00"/>
-        <Button x:Name="ToDatabase" Content="Game Results" HorizontalAlignment="Center" Height="49" Margin="0,265,0,0" VerticalAlignment="Top" Width="188" Click="ToDatabase_Click"/>
-        <DataGrid x:Name="DataBaseGrid" HorizontalAlignment="Left" Height="289" Margin="193,60,0,0" VerticalAlignment="Top" Width="435" d:ItemsSource="{d:SampleData ItemCount=5}" Visibility="Collapsed"/>
-        <Button x:Name="ToMainMenu" Content="To main menu" HorizontalAlignment="Left" Height="30" Margin="639,135,0,0" VerticalAlignment="Top" Width="101" Click="ToMainMenu_Click" Visibility="Collapsed"/>
-        <Button x:Name="Clear" Content="Clear" HorizontalAlignment="Left" Height="34" Margin="639,192,0,0" VerticalAlignment="Top" Width="101" Visibility="Collapsed" Click="Clear_Click"/>
+        <Label x:Name="Player2Color" Content="" HorizontalAlignment="Left" Height="23" Margin="609,89,0,0" VerticalAlignment="Top" Width="23
+               " RenderTransformOrigin="0.488,0.61" Background="#FFE6FF00" Grid.Column="1"/>
+        <Button x:Name="ToDatabase" Content="Game Results" HorizontalAlignment="Left" Height="49" Margin="198,265,0,0" VerticalAlignment="Top" Width="188" Click="ToDatabase_Click" Grid.Column="1"/>
+        <DataGrid x:Name="DataBaseGrid" HorizontalAlignment="Left" Height="115" Margin="85,31,0,0" VerticalAlignment="Top" Width="435" Visibility="Visible" Grid.Column="1"/>
+        <Button x:Name="ToMainMenu" Content="To main menu" HorizontalAlignment="Left" Height="30" Margin="531,135,0,0" VerticalAlignment="Top" Width="101" Click="ToMainMenu_Click" Visibility="Collapsed" Grid.Column="1"/>
+        <Button x:Name="Clear" Content="Clear" HorizontalAlignment="Left" Height="34" Margin="531,192,0,0" VerticalAlignment="Top" Width="101" Visibility="Collapsed" Click="Clear_Click" Grid.Column="1"/>
+        <DataGrid x:Name="TableGrid2" HorizontalAlignment="Left" Height="114" Margin="85,180,0,0" VerticalAlignment="Top" Width="440" d:ItemsSource="{d:SampleData ItemCount=5}" Grid.Column="1" Visibility="Collapsed"/>
+        <DataGrid x:Name="TableGrid3" HorizontalAlignment="Left" Height="114" Margin="85,330,0,0" VerticalAlignment="Top" Width="440" d:ItemsSource="{d:SampleData ItemCount=5}" Grid.Column="1" Visibility="Collapsed"/>
     </Grid>
 </Window>
