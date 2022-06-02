@@ -50,6 +50,7 @@ namespace VierGewinntExtrem
             dbcommand.CommandText = cmd;
             //command.Parameters.Add("@username", txtUserName.Text);
             //command.Parameters.Add("@password", txtPassword.Text);
+            
             dbcommand.ExecuteScalar();
 
             //I am not sure, but as I understand the adapter is for the data set and data table object
