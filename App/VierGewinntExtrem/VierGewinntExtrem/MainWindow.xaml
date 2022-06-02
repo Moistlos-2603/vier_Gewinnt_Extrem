@@ -23,5 +23,9 @@
                " Background="Red"/>
         <Label x:Name="Player2Color" Content="" HorizontalAlignment="Left" Height="23" Margin="717,89,0,0" VerticalAlignment="Top" Width="23
                " RenderTransformOrigin="0.488,0.61" Background="#FFE6FF00"/>
+        <Button x:Name="ToDatabase" Content="Game Results" HorizontalAlignment="Center" Height="49" Margin="0,265,0,0" VerticalAlignment="Top" Width="188" Click="ToDatabase_Click"/>
+        <DataGrid x:Name="DataBaseGrid" HorizontalAlignment="Left" Height="289" Margin="193,60,0,0" VerticalAlignment="Top" Width="435" d:ItemsSource="{d:SampleData ItemCount=5}" Visibility="Collapsed"/>
+        <Button x:Name="ToMainMenu" Content="To main menu" HorizontalAlignment="Left" Height="30" Margin="639,135,0,0" VerticalAlignment="Top" Width="101" Click="ToMainMenu_Click" Visibility="Collapsed"/>
+        <Button x:Name="Clear" Content="Clear" HorizontalAlignment="Left" Height="34" Margin="639,192,0,0" VerticalAlignment="Top" Width="101" Visibility="Collapsed" Click="Clear_Click"/>
     </Grid>
 </Window>

@@ -41,15 +41,16 @@ namespace VierGewinntExtrem
             GameTypeSelector.Items.Add(mode_3x3);
             Title = "VierGewinnt";
             handler = new SQLHandler();
+            //This should give the data to the data context, meaning: the table gets content.
+            DataBaseGrid.DataContext = handler.DataSet;
             //wait for startbutton to be pressed
-
             StartGame();
         }
 
         private void StartGame()
         {
             //make everything except start button invisible.
-
+            DataBaseGrid.Visibility = Visibility.Collapsed;
             GameTypeSelector.Visibility = Visibility.Collapsed;
             P1NameGetter.Visibility = Visibility.Collapsed;
             P2NameGetter.Visibility = Visibility.Collapsed;
@@ -60,7 +61,9 @@ namespace VierGewinntExtrem
             Player1Color.Visibility = Visibility.Collapsed;
             Player2Color.Visibility = Visibility.Collapsed;
 
+            //make start button and database button visible.
             StartButton.Visibility = Visibility.Visible;
+            ToDatabase.Visibility = Visibility.Visible;
         }
 
         /// <summary>
@@ -72,7 +75,9 @@ namespace VierGewinntExtrem
         {
             //make start button disapear + game selector visible
             StartButton.Visibility = Visibility.Collapsed;
+            ToDatabase.Visibility = Visibility.Collapsed;
             GameTypeSelector.Visibility = Visibility.Visible;
+
             //wait for game be selected
             GameTypeSelector.SelectionChanged -= GameTypeSelector_SelectionChanged;
             GameTypeSelector.SelectedIndex = -1;
@@ -298,6 +303,51 @@ namespace VierGewinntExtrem
 
             ReplayButton.Visibility = Visibility.Visible;
             DeleteVisualField();
+        }
+
+        /// <summary>
+        /// Go to the data base.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToDatabase_Click(object sender, RoutedEventArgs e)
+        {
+            //Make everything invisible.
+            StartButton.Visibility = Visibility.Collapsed;
+            ToDatabase.Visibility = Visibility.Collapsed;
+
+            //Make the grid visible.
+            DataBaseGrid.Visibility = Visibility.Visible;
+
+            //Fill the grid.
+            DataBaseGrid.ItemsSource = handler.DataTable?.DefaultView;
+
+            ToMainMenu.Visibility = Visibility.Visible;
+            Clear.Visibility = Visibility.Visible;
+        }
+
+        private void ToMainMenu_Click(object sender, RoutedEventArgs e)
+        {
+            //Hide database.
+            DataBaseGrid.Visibility = Visibility.Collapsed;
+
+            //make contents of the main menu visible
+            StartButton.Visibility = Visibility.Visible;
+            ToDatabase.Visibility = Visibility.Visible;
+
+            ToMainMenu.Visibility = Visibility.Collapsed;
+            Clear.Visibility = Visibility.Collapsed;
+        }
+
+        /// <summary>
+        /// It does what it says.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Clear_Click(object sender, RoutedEventArgs e)
+        {
+            //Execute the clear command.
+            handler.Execute("");
         }
 
         /// <summary>
