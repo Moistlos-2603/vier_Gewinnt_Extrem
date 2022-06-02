@@ -120,7 +120,6 @@ namespace VierGewinntExtrem
             P2NameGetter.Visibility = Visibility.Collapsed;
 
             //TODO: Make player into Database!
-            //handler.Execute("INSERT INTO `spiele` (`idSpiele`, `spieler`, `spieler1`, `Gewinner`) VALUES ('', 'wer', 'asdf', '1'), ('', 'adsf', 'vchnd', '2')");
 
             //Game actually gets initialized
             InitializeGame();
@@ -297,11 +296,11 @@ namespace VierGewinntExtrem
 
             GameEndMSG.Content = $"Congratulations,\n'{name}' won.";
             GameEndMSG.Visibility = Visibility.Visible;
-            bool winner;
+            
              
             
             //TODO: database entry for the win
-            handler.Execute("INSERT INTO `spiele` (`idSpiele`, `spieler`, `spieler1`, `Gewinner`) VALUES ('', '" + P1NameGetter.Text + "', '" + P2NameGetter.Text +"', '1')");
+            handler.Execute("INSERT INTO `spiele` (`idSpiele`, `spieler`, `spieler1`, `Gewinner`) VALUES ('', '" + P1NameGetter.Text + "', '" + P2NameGetter.Text +"', '" + name + "')");
 
             ReplayButton.Visibility = Visibility.Visible;
             DeleteVisualField();
@@ -342,14 +341,18 @@ namespace VierGewinntExtrem
         }
 
         /// <summary>
-        /// It does what it says.
+        /// It clears all tabels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Clear_Click(object sender, RoutedEventArgs e)
         {
             //Execute the clear command.
-            handler.Execute("");
+            handler.Execute("DELETE FROM `spieleliga`, ");
+            handler.Execute("DELETE FROM `spielerliga`");
+            handler.Execute("DELETE FROM `spiele`");
+
+
         }
 
         /// <summary>
@@ -366,7 +369,7 @@ namespace VierGewinntExtrem
             GameEndMSG.Visibility = Visibility.Visible;
 
             //TODO: database entry for this match
-            //handler.Execute("");
+            handler.Execute("INSERT INTO `spiele` (`idSpiele`, `spieler`, `spieler1`, `Gewinner`) VALUES ('', '" + P1NameGetter.Text + "', '" + P2NameGetter.Text + "', '')");
 
 
             ReplayButton.Visibility = Visibility.Visible;
