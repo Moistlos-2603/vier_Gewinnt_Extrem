@@ -33,5 +33,16 @@
         <Button x:Name="Clear" Content="Clear" HorizontalAlignment="Left" Height="34" Margin="531,192,0,0" VerticalAlignment="Top" Width="101" Visibility="Collapsed" Click="Clear_Click" Grid.Column="1"/>
         <DataGrid x:Name="TableGrid2" HorizontalAlignment="Left" Height="114" Margin="85,180,0,0" VerticalAlignment="Top" Width="440" d:ItemsSource="{d:SampleData ItemCount=5}" Grid.Column="1" Visibility="Collapsed"/>
         <DataGrid x:Name="TableGrid3" HorizontalAlignment="Left" Height="114" Margin="85,330,0,0" VerticalAlignment="Top" Width="440" d:ItemsSource="{d:SampleData ItemCount=5}" Grid.Column="1" Visibility="Collapsed"/>
+        <Grid x:Name="TNamesGrid" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="350" Margin="10,25,0,0" VerticalAlignment="Top" Width="178">
+            <TextBox x:Name="NameBox0" Grid.ColumnSpan="2" Visibility="Collapsed" HorizontalAlignment="Left" Height="25" Margin="23,0,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="149"/>
+            <TextBox x:Name="NameBox1" Grid.ColumnSpan="2" Visibility="Collapsed" HorizontalAlignment="Left" Height="25" Margin="23,40,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="149"/>
+            <TextBox x:Name="NameBox2" Grid.ColumnSpan="2" Visibility="Collapsed" HorizontalAlignment="Left" Height="25" Margin="23,80,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="149"/>
+            <TextBox x:Name="NameBox3" Grid.ColumnSpan="2" Visibility="Collapsed" HorizontalAlignment="Left" Height="25" Margin="23,120,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="149"/>
+            <TextBox x:Name="NameBox4" Grid.ColumnSpan="2" Visibility="Collapsed" HorizontalAlignment="Left" Height="25" Margin="23,160,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="149"/>
+            <TextBox x:Name="NameBox5" Grid.ColumnSpan="2" Visibility="Collapsed" HorizontalAlignment="Left" Height="25" Margin="23,200,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="149"/>
+            <TextBox x:Name="NameBox6" Grid.ColumnSpan="2" Visibility="Collapsed" HorizontalAlignment="Left" Height="25" Margin="23,240,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="149"/>
+            <TextBox x:Name="NameBox7" Grid.ColumnSpan="2" Visibility="Collapsed" HorizontalAlignment="Left" Height="25" Margin="23,380,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="149"/>
+            <TextBox x:Name="NameBox8" Grid.ColumnSpan="2" Visibility="Collapsed" HorizontalAlignment="Left" Height="25" Margin="23,420,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="149"/>
+        </Grid>
     </Grid>
 </Window>

@@ -1,11 +1,7 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\App",
-    "\\App\\VierGewinntExtrem",
-    "\\App\\VierGewinntExtrem\\VierGewinntExtrem",
-    "\\Field"
+    ""
   ],
-  "SelectedNode": "\\App\\VierGewinntExtrem\\VierGewinntExtrem\\MainWindow.xaml.cs",
+  "SelectedNode": "\\VierGewinntExtrem.sln",
   "PreviewInSolutionExplorer": false
 }

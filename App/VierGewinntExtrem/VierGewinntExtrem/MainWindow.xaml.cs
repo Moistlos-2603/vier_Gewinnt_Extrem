@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Collections.Generic;
 
 namespace VierGewinntExtrem
 {
@@ -16,7 +17,7 @@ namespace VierGewinntExtrem
         //sql
         private SQLHandler handler;
         //constants to avoid typos
-        private const string mode_normal = "Normal", mode_3x3 = "3 x 3";
+        private const string mode_normal = "Normal", mode_3x3 = "3 x 3", tournament = "Tournament";
         private const char player1 = '1', player2 = '2';
         private Regex valid_name;
         private Ellipse[] visual_field;
@@ -24,7 +25,10 @@ namespace VierGewinntExtrem
 
         //0 = player1, 1 = player2
         private byte gamestate;
-
+        private bool tournament_;
+        private List<string> tnames;
+        private List<int> indecies;
+        private int matches;
 
 #pragma warning disable IDE0052 // Ungelesene private Member entfernen
         private Field.Field game;
@@ -39,11 +43,16 @@ namespace VierGewinntExtrem
             //make everything invisible for later
             GameTypeSelector.Items.Add(mode_normal);
             GameTypeSelector.Items.Add(mode_3x3);
+            GameTypeSelector.Items.Add(tournament);
             Title = "VierGewinnt";
             handler = new SQLHandler();
             //This should give the data to the data context, meaning: the table gets content.
             DataBaseGrid.DataContext = handler.DataSet;
             //wait for startbutton to be pressed
+            tournament_ = false;
+            matches = 0;
+            tnames = new();
+            indecies = new();
             StartGame();
         }
 
@@ -91,33 +100,83 @@ namespace VierGewinntExtrem
         /// <param name="e"></param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            //Prepare field for errors, so the player knows which pattern the name has to be.
             NameErrorMSG.Content = "";
             bool is_name_valid = true;
 
-            if (valid_name.Match(P1NameGetter.Text).Length != P1NameGetter.Text.Length)
+            if (!tournament_)
             {
-                NameErrorMSG.Content += "Player 1 name is not valid, must match: (\\w|[0-9])+\n";
-                is_name_valid = false;
+                //Has to be conform to the regex at the top of the class.
+                if (valid_name.Match(P1NameGetter.Text).Length != P1NameGetter.Text.Length)
+                {
+                    NameErrorMSG.Content += "Player 1 name is not valid, must match: (\\w|[0-9])+\n";
+                    is_name_valid = false;
+                }
+                //Player 2 needs too, a fitting name.
+                if (valid_name.Match(P2NameGetter.Text).Length != P2NameGetter.Text.Length)
+                {
+                    NameErrorMSG.Content += "Player 2 name is not valid, must match: (\\w|[0-9])+";
+                    is_name_valid = false;
+                }
+                //Names must be unequal.
+                if (P1NameGetter.Text == P2NameGetter.Text)
+                {
+                    NameErrorMSG.Content += "Names must be unequal.";
+                    is_name_valid = false;
+                }
+                //Return finally to prevent to go to the next menu.
+                if (!is_name_valid)
+                {
+                    return;
+                }
+                P1NameGetter.Visibility = Visibility.Collapsed;
+                P2NameGetter.Visibility = Visibility.Collapsed;
             }
-            if (valid_name.Match(P2NameGetter.Text).Length != P2NameGetter.Text.Length)
+            else
             {
-                NameErrorMSG.Content += "Player 2 name is not valid, must match: (\\w|[0-9])+";
-                is_name_valid = false;
-            }
-            if(P1NameGetter.Text == P2NameGetter.Text)
-            {
-                NameErrorMSG.Content += "Names must be unequal.";
-                is_name_valid = false;
-            }
-            if (!is_name_valid)
-            {
+                //Test if all names are legal.
+                foreach(TextBox t in TNamesGrid.Children)
+                {
+                    if(valid_name.Match(t.Text).Length != t.Text.Length)
+                    {
+                        return;
+                    }
+                }
+                
+                //Add the name and test if there are duplications.
+                for(int i = 0; i < TNamesGrid.Children.Count; i++)
+                {
+                    TextBox t = (TextBox)TNamesGrid.Children[i];
+                    if (t.Text.Length > 0)
+                    {
+                        tnames.Add(t.Text);
+                    }
+                    //Testing all the above, but not below. They are already tested.
+                    for(int j = i + 1; j < TNamesGrid.Children.Count; j++)
+                    {
+                        if(t.Text == ((TextBox)TNamesGrid.Children[j]).Text && t.Text != string.Empty)
+                        {
+                            tnames = new();
+                            return;
+                        }
+                    }
 
-                return;
-            }
+                }
+                //It's only a tournament with 3 player so we test that.
+                if(tnames.Count < 3)
+                {
+                    return;
+                }
 
+                //Hide the text boxes.
+                //It has to happen now because earlier are just the names are tested. The tests can fail thus the boxes need to be visible.
+                foreach(TextBox t in TNamesGrid.Children)
+                {
+                    t.Visibility = Visibility.Collapsed;
+                }
+            }
             NameSubmitButton.Visibility = Visibility.Collapsed;
-            P1NameGetter.Visibility = Visibility.Collapsed;
-            P2NameGetter.Visibility = Visibility.Collapsed;
+            
 
             //TODO: Make player into Database!
 
@@ -131,8 +190,10 @@ namespace VierGewinntExtrem
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void GameTypeSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
+        { 
             string s = (string)GameTypeSelector.SelectedItem;
+            
+            //Prepare the game depending on the mode.
             switch (s)
             {
                 case mode_normal:
@@ -142,8 +203,26 @@ namespace VierGewinntExtrem
                 case mode_3x3:
                     game = new(3, 3, 3);
                     break;
-            }
 
+                case tournament:
+                    game = new(7, 6, 4);
+                    //Special initialization for the tournament, it will need an own name getting modus
+                    tournament_ = true;
+                    NameBox0.Visibility = Visibility.Visible;
+                    NameBox1.Visibility = Visibility.Visible;
+                    NameBox2.Visibility = Visibility.Visible;
+                    NameBox3.Visibility = Visibility.Visible;
+                    NameBox4.Visibility = Visibility.Visible;
+                    NameBox5.Visibility = Visibility.Visible;
+                    NameBox6.Visibility = Visibility.Visible;
+                    NameBox7.Visibility = Visibility.Visible;
+
+                    NameSubmitButton.Visibility = Visibility.Visible;
+
+                    GameTypeSelector.Visibility = Visibility.Collapsed;
+                    return;
+            }
+            //Mode 3x3 and Normal are so similar, they get the same pre-initialization process.
             //wait for names typed in and make required things visible
             GameTypeSelector.Visibility = Visibility.Collapsed;
             P1NameGetter.Visibility = Visibility.Visible;
@@ -160,11 +239,13 @@ namespace VierGewinntExtrem
         {
             GameGrid.Visibility = Visibility.Visible;
 
+            //Get the dimensions of the field and define the array according to the product of those dimensions.
             (int, int) values = game.Dimensions;
             visual_field = new Ellipse[values.Item1 * values.Item2];
+            //The number of buttons is equal to the width, since the player has no controll over the y-axis.
             controls = new Button[values.Item1];
 
-
+            //Iterate through all the x-axis.
             for (int i = 0; i < values.Item1; i++)
             {
                 GameGrid.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
@@ -193,6 +274,11 @@ namespace VierGewinntExtrem
                 controls[i].SetValue(Grid.ColumnProperty, i);
                 controls[i].Click += GenericControlButton_Clicked;
                 ButtonGrid.Children.Add(controls[i]);
+            }
+            if(tournament_ && (tnames.Count > 2*matches + 1))
+            {
+                P1NameGetter.Text = tnames[2*matches];
+                P2NameGetter.Text = tnames[2*matches + 1];
             }
             PlayerTurnDisplay.Content = P1NameGetter.Text;
             gamestate = 0;
@@ -264,20 +350,66 @@ namespace VierGewinntExtrem
         /// </summary>
         private void EvaluateWinner()
         {
-            char winner = game.CheckWinner();
-            
-            if (!game.ToString1D().Contains(' ') && winner == ' ')
+            if (tournament_)
             {
-                Tie();
-                return;
-            }
-            if (winner == ' ')
-            {
-                return;
-            }
+                char winner = game.CheckWinner();
+                if (!game.ToString1D().Contains(' ') && winner == ' ')
+                {
+                    //Tournament tie
+                    //TODO: idk implement maybe some sql
+                    return;
+                }
+                if (winner == ' ')
+                {
+                    return;
+                }
+                //Tournament win
+                //TODO: idk implement maybe some sql
+                indecies.Add(winner == Field.Field.Player1 ? 2*matches + 1 : 2*matches);
+                matches++;
 
-            GameWon(winner == Field.Field.Player1 ? P1NameGetter.Text : P2NameGetter.Text);
-            GameGrid.Visibility = Visibility.Collapsed;
+                //If an iteration is done...
+                if(tnames.Count / 2 == matches && tnames.Count > 1)
+                {
+                    //...all the loosers purged.
+                    indecies.Sort();
+                    indecies.Reverse();
+                    foreach(int index in indecies)
+                    {
+                        tnames.RemoveAt(index);
+                        matches = 0;
+                    }
+                    indecies = new();
+                }
+                if(tnames.Count == 1)
+                {
+                    string absolute_winner = winner == Field.Field.Player1 ? P1NameGetter.Text : P2NameGetter.Text;
+                    DeleteVisualField();
+                    GameWon(absolute_winner);
+                    return;
+                }
+                DeleteVisualField();
+                game = new(7, 6, 4);
+                InitializeGame();
+
+            }
+            else
+            {
+                char winner = game.CheckWinner();
+
+                if (!game.ToString1D().Contains(' ') && winner == ' ')
+                {
+                    Tie();
+                    return;
+                }
+                if (winner == ' ')
+                {
+                    return;
+                }
+
+                GameWon(winner == Field.Field.Player1 ? P1NameGetter.Text : P2NameGetter.Text);
+                GameGrid.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void ReplayButton_Click(object sender, RoutedEventArgs e)
