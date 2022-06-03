@@ -178,7 +178,8 @@ namespace VierGewinntExtrem
                 //TODO: add player to database
                 foreach(string name in tnames)
                 {
-                    //
+                    handler.Execute("INSERT INTO `spielerliga` (`idLiga`, `NameSpieler`, `Punkte`, `Siege`, `Niederlagen`, `unentschieden`) VALUES (NULL, '" + name +"', '1', '0', '0', '0')");
+
                 }
             }
             NameSubmitButton.Visibility = Visibility.Collapsed;
@@ -385,6 +386,7 @@ namespace VierGewinntExtrem
                 }
                 //Tournament win
                 //TODO: idk implement maybe some sql
+
                 indecies.Add(winner == Field.Field.Player1 ? 2 * matches + 1 : 2 * matches);
                 matches++;
 
@@ -460,6 +462,7 @@ namespace VierGewinntExtrem
             if(tournament)
             {
                 //TODO: database entry for the win in tournament
+                //handler.Execute("INSERT INTO `spielerliga` (`idLiga`, `NameSpieler`, `Punkte`, `Siege`, `Niederlagen`, `unentschieden`) VALUES (NULL, '" + name +"', '1', '0', '0', '0')");
             }
             else
             { 

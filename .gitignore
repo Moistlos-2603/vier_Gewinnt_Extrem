@@ -56,6 +56,7 @@ ipch/
 *.psess
 *.vsp
 *.vspx
+*.vsidx
 
 # Guidance Automation Toolkit
 *.gpState
@@ -131,3 +132,7 @@ $RECYCLE.BIN/
 .DS_Store
 
 _NCrunch*
+
+# Meine Änderungen 
+*.sqlite
+.vs/
